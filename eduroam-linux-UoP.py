@@ -13,7 +13,7 @@
  * GÉANT Vereniging (Association) is registered with the Chamber of
  * Commerce in Amsterdam with registration number 40535155 and operates
  * in the UK as a branch of GÉANT Vereniging.
- * 
+ *
  * Registered office: Hoekenrode 3, 1102BR Amsterdam, The Netherlands.
  * UK branch address: City House, 126-130 Hills Road, Cambridge CB2 1PQ, UK
  *
@@ -53,8 +53,8 @@ from shutil import copyfile
 NM_AVAILABLE = True
 CRYPTO_AVAILABLE = True
 DEBUG_ON = False
-DEV_NULL = open("/dev/null", "w")
-STDERR_REDIR = DEV_NULL
+with open("/dev/null", "w", encoding="utf-8") as DEV_NULL:
+    STDERR_REDIR = DEV_NULL
 
 
 def debug(msg):
@@ -64,9 +64,8 @@ def debug(msg):
     print("DEBUG:" + str(msg))
 
 
-def missing_dbus():
+def missing_dbus(NM_AVAILABLE):
     """Handle missing dbus module"""
-    global NM_AVAILABLE
     debug("Cannot import the dbus module")
     NM_AVAILABLE = False
 
@@ -89,12 +88,12 @@ try:
     import dbus
 except ImportError:
     if sys.version_info.major == 3:
-        missing_dbus()
+        missing_dbus(NM_AVAILABLE)
     if sys.version_info.major < 3:
         try:
             subprocess.call(['python3'] + sys.argv)
         except:
-            missing_dbus()
+            missing_dbus(NM_AVAILABLE)
         sys.exit(0)
 
 try:
@@ -151,13 +150,11 @@ def get_system():
     return [system[0], system[1], desktop]
 
 
-def run_installer():
+def run_installer(NM_AVAILABLE, DEBUG_ON):
     """
     This is the main installer part. It tests for MN availability
     gets user credentials and starts a proper installer.
     """
-    global DEBUG_ON
-    global NM_AVAILABLE
     username = ''
     password = ''
     silent = False
@@ -1077,4 +1074,4 @@ apdRcsKVGkOpaTIJP/l+lAHRLZxk/dUtyN95G++bOSQqnOCpVPabUGl2E/OEyFrp
 Ipwgu2L/WJclvd6g+ZA/iWkLSMcpnFb+uX6QBqvD6+RNxul1FaB5iHY=
 -----END CERTIFICATE-----
 """
-run_installer()
+run_installer(NM_AVAILABLE, DEBUG_ON)
