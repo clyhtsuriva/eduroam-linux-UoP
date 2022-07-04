@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
  * **************************************************************************
@@ -66,8 +66,8 @@ def debug(msg):
 
 def missing_dbus(NM_AVAILABLE):
     """Handle missing dbus module"""
-    debug("Cannot import the dbus module")
     NM_AVAILABLE = False
+    debug("Cannot import the dbus module")
 
 
 def byte_to_string(barray):
@@ -76,8 +76,9 @@ def byte_to_string(barray):
 
 
 def get_input(prompt):
+    # TODO: docstring
     if sys.version_info.major < 3:
-        return raw_input(prompt) # pylint: disable=undefined-variable
+        return raw_input(prompt)
     return input(prompt)
 
 
@@ -122,12 +123,13 @@ def detect_desktop_environment():
         desktop_environment = 'gnome'
     else:
         try:
-            shell_command = subprocess.Popen(['xprop', '-root',
-                                              '_DT_SAVE_MODE'],
-                                             stdout=subprocess.PIPE,
-                                             stderr=subprocess.PIPE)
-            out, err = shell_command.communicate()
-            info = out.decode('utf-8').strip()
+            with subprocess.Popen(
+                    ['xprop', '-root', '_DT_SAVE_MODE'],
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.PIPE
+            ) as shell_command:
+                out, err = shell_command.communicate()
+                info = out.decode('utf-8').strip()
         except (OSError, RuntimeError):
             pass
         else:
